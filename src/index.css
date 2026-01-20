@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --color-intp-base: #0B1120;
+  --color-intp-surface: #1E293B;
+  --color-intp-surfaceLight: #334155;
+  --color-intp-highlight: #38BDF8;
+  --color-intp-accent: #22D3EE;
+  --color-intp-muted: #94A3B8;
+  --color-intp-danger: #EF4444;
+  --color-intp-success: #10B981;
+
+  --font-mono: "Fira Code", monospace;
+  --font-sans: "Inter", sans-serif;
+
+  --animate-glow: glow 2s ease-in-out infinite alternate;
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes glow {
+    0% { box-shadow: 0 0 5px rgba(56, 189, 248, 0.3); }
+    100% { box-shadow: 0 0 20px rgba(34, 211, 238, 0.6); border-color: #22D3EE; }
+  }
+}
+
+body {
+  @apply bg-intp-base text-white font-sans overflow-hidden;
+}
+
+/* Custom scrollbar for INTP aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-intp-base;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-intp-surfaceLight rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-intp-muted;
+}
