@@ -48,13 +48,6 @@ export const executeCode = async (code, onOutput) => {
   // We define a custom python print override or use setStdout if available
   // The most robust way is to redirect sys.stdout in Python
 
-  const setupCode = `
-import sys
-from io import StringIO
-sys.stdout = StringIO()
-sys.stderr = StringIO()
-`;
-
   try {
     // We can't easily rely on setStdout for async execution in all versions without setup
     // But let's try the modern API first

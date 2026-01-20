@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
-import { Home, Map, Trophy, Terminal, Zap, Code2 } from 'lucide-react';
+import { Home, Map, Trophy, Terminal, Zap, Code2, Flame, Heart } from 'lucide-react';
 import { cn } from '../ui/Button';
 
 const NavItem = ({ to, icon: Icon, label, active }) => (
@@ -20,13 +20,13 @@ const NavItem = ({ to, icon: Icon, label, active }) => (
 );
 
 export const Shell = () => {
-  const { xp, level, streak } = useGame();
+  const { xp, level, streak, cpuCycles } = useGame();
   const location = useLocation();
 
   const navItems = [
     { to: '/', icon: Home, label: 'Home' },
     { to: '/map', icon: Map, label: 'Path' },
-    { to: '/practice', icon: Code2, label: 'Practice' }, // Placeholder for freestyle
+    { to: '/practice', icon: Code2, label: 'Practice' },
   ];
 
   return (
@@ -45,20 +45,43 @@ export const Shell = () => {
           <span className="hidden lg:block font-bold font-mono tracking-tighter text-xl">PY.ARCHITECT</span>
         </div>
 
-        {/* Stats (Mobile hidden mostly, Desktop visible) */}
-        <div className="hidden md:flex flex-col gap-4 w-full px-4 mb-8">
-          <div className="bg-intp-base/50 p-3 rounded-lg border border-white/5">
-            <div className="flex items-center gap-2 text-xs text-intp-muted mb-1">
-              <Zap size={14} className="text-yellow-400" />
-              <span>Level {level}</span>
+        {/* Stats (Desktop) */}
+        <div className="hidden md:flex flex-col gap-3 w-full px-4 mb-8">
+          <div className="bg-intp-base/50 p-3 rounded-lg border border-white/5 space-y-3">
+
+            {/* Level & XP */}
+            <div>
+                <div className="flex items-center gap-2 text-xs text-intp-muted mb-1">
+                <Zap size={14} className="text-yellow-400" />
+                <span>Level {level}</span>
+                </div>
+                <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                <div
+                    className="h-full bg-intp-highlight transition-all duration-500"
+                    style={{ width: `${(xp % 500) / 5}%` }}
+                />
+                </div>
+                <div className="text-[10px] text-right mt-1 font-mono">{xp} XP</div>
             </div>
-            <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-intp-highlight transition-all duration-500"
-                style={{ width: `${(xp % 500) / 5}%` }}
-              />
+
+            {/* CPU Cycles (Hearts) */}
+            <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2 text-red-400">
+                    <Heart size={16} fill={cpuCycles > 0 ? "currentColor" : "none"} />
+                    <span className="font-mono">CPU</span>
+                </div>
+                <span className="font-mono text-white">{cpuCycles}/5</span>
             </div>
-            <div className="text-[10px] text-right mt-1 font-mono">{xp} XP</div>
+
+            {/* Streak */}
+            <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2 text-orange-400">
+                    <Flame size={16} fill={streak > 0 ? "currentColor" : "none"} />
+                    <span className="font-mono">Streak</span>
+                </div>
+                <span className="font-mono text-white">{streak}</span>
+            </div>
+
           </div>
         </div>
 
@@ -80,20 +103,28 @@ export const Shell = () => {
         <header className="md:hidden h-14 flex items-center justify-between px-4 border-b border-white/5 bg-intp-surface/30 backdrop-blur">
           <div className="flex items-center gap-2 font-mono font-bold text-intp-highlight">
             <Terminal size={20} />
-            <span>ARCHITECT</span>
+            <span>ARCH</span>
           </div>
-          <div className="flex items-center gap-3 text-xs font-mono">
-            <div className="flex items-center gap-1">
-              <Zap size={14} className="text-yellow-400" />
-              <span>{level}</span>
+          <div className="flex items-center gap-4 text-xs font-mono">
+            {/* Streak */}
+             <div className="flex items-center gap-1 text-orange-400">
+              <Flame size={16} fill={streak > 0 ? "currentColor" : "none"} />
+              <span>{streak}</span>
             </div>
-            <div className="px-2 py-0.5 bg-intp-highlight/10 text-intp-highlight rounded border border-intp-highlight/20">
-              {xp} XP
+            {/* Hearts */}
+            <div className="flex items-center gap-1 text-red-400">
+              <Heart size={16} fill={cpuCycles > 0 ? "currentColor" : "none"} />
+              <span>{cpuCycles}</span>
+            </div>
+             {/* Level */}
+            <div className="flex items-center gap-1 text-yellow-400">
+              <Zap size={16} fill="currentColor" />
+              <span>{level}</span>
             </div>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden relative scrollbar-thin scrollbar-thumb-intp-highlight/20 scrollbar-track-transparent">
            {/* Background Grid */}
            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
            <Outlet />

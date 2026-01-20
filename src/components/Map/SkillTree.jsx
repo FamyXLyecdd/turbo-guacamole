@@ -6,11 +6,21 @@ export const SkillTree = ({ modules, completedLessons, onLessonSelect }) => {
   // Flatten curriculum to a linear path for simplicity in MVP
   // In a real app, this would be a directed acyclic graph
 
-  const nodes = useMemo(() => {
+  const { nodes, moduleMarkers } = useMemo(() => {
     let nodeList = [];
+    let markerList = [];
     let globalIndex = 0;
 
     modules.forEach((module, mIdx) => {
+      // Calculate marker position (above the first lesson of the module)
+      const startY = globalIndex * 120 + 100;
+      markerList.push({
+        id: module.id,
+        title: module.title,
+        y: startY - 70, // Position above the first node
+        description: module.description
+      });
+
       module.lessons.forEach((lesson, lIdx) => {
         const isEven = globalIndex % 2 === 0;
         nodeList.push({
@@ -32,7 +42,7 @@ export const SkillTree = ({ modules, completedLessons, onLessonSelect }) => {
         globalIndex++;
       });
     });
-    return nodeList;
+    return { nodes: nodeList, moduleMarkers: markerList };
   }, [modules, completedLessons]);
 
   return (
@@ -65,6 +75,23 @@ export const SkillTree = ({ modules, completedLessons, onLessonSelect }) => {
           );
         })}
       </svg>
+
+      {/* Module Markers */}
+      <div className="absolute top-0 left-0 w-full z-0">
+        {moduleMarkers.map((marker) => (
+          <motion.div
+            key={marker.id}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+            className="absolute left-[10%] md:left-[20%] w-[80%] md:w-[60%] border-t border-intp-highlight/20 pt-2"
+            style={{ top: marker.y }}
+          >
+             <h3 className="text-intp-highlight font-mono text-sm uppercase tracking-widest">{marker.title}</h3>
+             <p className="text-xs text-intp-muted hidden sm:block">{marker.description}</p>
+          </motion.div>
+        ))}
+      </div>
 
       {/* Nodes */}
       <div className="relative z-10 w-full h-full">
